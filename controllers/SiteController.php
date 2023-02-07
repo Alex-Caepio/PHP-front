@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -69,21 +70,17 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+    public function actionLogin(){
+        if (Yii::$app->request->isPost) {
+            $username = Yii::$app->request->post('username');
+            $password = Yii::$app->request->post('password');
+            $user = User::findByUsername($username);
+            if ($user && Yii::$app->getSecurity()->validatePassword($password, $user->password_hash)) {
+                Yii::$app->user->login($user);
+                return $this->goBack();
+            }
         }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return ("You logged in");
     }
 
     /**

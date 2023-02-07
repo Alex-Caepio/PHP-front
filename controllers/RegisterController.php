@@ -14,12 +14,6 @@ class RegisterController extends Controller
      */
     public function actionSignup()
     {
-        //write code to register user using SignupForm
-//        $formData = Yii::$app->request->post();
-
-//        $user->load(Yii::$app->request->post('User'));
-
-
         $user = new User(Yii::$app->request->post('User'));
 
         if ($user->save()) {

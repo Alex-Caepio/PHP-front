@@ -6,41 +6,42 @@ use app\models\User;
 use Yii;
 
 use yii\web\Controller;
+use function MongoDB\BSON\toJSON;
 
 
 class UserController extends Controller
 {
-    public function actionSignup()
+    public function actionIndex()
     {
-        //write code to input data from request into database
         $user = new User();
         $formData = Yii::$app->request->post();
         $user->username = $formData['username'];
         $user->email = $formData['email'];
         $user->password = $formData['password'];
         $user->save();
+        return ("You created a user");
     }
 
-    //write function for reading data from database
     public function actionRead()
     {
-        return User::find()->all();
+        return \yii\helpers\Json::encode(User::find()->asArray()->all());
     }
-    //write function for updating data in database
-    public function actionUpdate()
+
+    public function actionUpdate($id)
     {
         $formData = Yii::$app->request->post();
-        $user = User::findOne($formData['id']);
+        $user = User::findOne($id);
         $user->username = $formData['username'];
         $user->email = $formData['email'];
         $user->password = $formData['password'];
         $user->save();
+        return ("You updated a user");
     }
-    //write function for deleting data from database
-    public function actionDelete()
+
+    public function actionDelete($id)
     {
-        $formData = Yii::$app->request->post();
-        $user = User::findOne($formData['id']);
+        $user = User::findOne($id);
         $user->delete();
+        return("You deleted a user");
     }
 }
